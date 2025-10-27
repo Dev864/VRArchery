@@ -14,6 +14,7 @@ public class SafetyWarning : MonoBehaviour
     public GameObject panel;
     public Button confirmButton;
     public string agreedKey = "SafetyAgreed";
+    public static bool safetyAgreed = false;
 
     [Header("XR Setup")]
     public Canvas safetyCanvas;
@@ -200,6 +201,7 @@ public class SafetyWarning : MonoBehaviour
     {
         PlayerPrefs.SetInt(agreedKey, 1);
         PlayerPrefs.Save();
+        safetyAgreed = true;
         EnablePlayerMovement();
         panel.SetActive(false);
         enabled = false;

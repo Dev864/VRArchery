@@ -52,9 +52,9 @@ public class TargetScoring : MonoBehaviour
         Debug.Log("SCORE: " + (int)finalScore);
 
         // --- 5. (Future Step) Send to Global Score Manager ---
-        // if (scoreManager != null)
-        // {
-        //     scoreManager.AddScore((int)finalScore);
-        // }
+        if (ScoreManager.Instance != null)
+        {
+             ScoreManager.Instance.AddScore((int)finalScore);
+        }
     }
 }
