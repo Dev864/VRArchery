@@ -36,6 +36,11 @@ namespace UnityEngine.XR.Interaction.Toolkit.Interactables
         {
             PullActionReleased?.Invoke(pullAmount);
             PullEnded?.Invoke();
+
+            //Increment Arrow Counter
+            if (ArrowCounter.Instance != null)
+                ArrowCounter.Instance.IncrementArrowCount();
+
             _pullingInteractor = null;
             pullAmount = 0f;
             _notchPoint.transform.localPosition =
