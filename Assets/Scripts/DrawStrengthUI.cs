@@ -10,8 +10,15 @@ public class DrawStrengthUI : MonoBehaviour
     public Slider strengthSlider;       // assign the UI slider
     public TMP_Text strengthLabel;      // assign the strength text label
 
+    [Header("Color Settings")]
+    public Image fillImage;
+    public Color minColor = Color.green;
+    public Color midColor = Color.yellow;
+    public Color maxColor = Color.red;
+
     private void OnEnable()
     {
+        // Hide the slider and label at start
         if (strengthSlider)
             strengthSlider.gameObject.SetActive(false);
         if (strengthLabel)
@@ -39,5 +46,23 @@ public class DrawStrengthUI : MonoBehaviour
             return;
 
         strengthSlider.value = bowPull.pullAmount;
+
+        if (fillImage != null)
+            fillImage.color = EvaluateStrengthColor(bowPull.pullAmount);
+    }
+
+    private Color EvaluateStrengthColor(float value)
+    {
+        // Blend green → yellow → red smoothly
+        if (value < 0.5f)
+        {
+            // from green to yellow
+            return Color.Lerp(minColor, midColor, value * 2f);
+        }
+        else
+        {
+            // from yellow to red
+            return Color.Lerp(midColor, maxColor, (value - 0.5f) * 2f);
+        }
     }
 }
