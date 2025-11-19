@@ -11,21 +11,50 @@ public class TargetScoring : MonoBehaviour
     [Tooltip("The radius of the target's scoring area in Unity units. A hit at this distance is 0 points.")]
     public float targetRadius = 1.0f; // <-- IMPORTANT: You MUST set this in the Inspector!
 
-    [Header("Scoring Manager (Optional)")]
-    [Tooltip("Drag your global score manager object here later.")]
-    public ScoreManager scoreManager; // We'll set this up next
+    [Header("Target Settings")]
+    [Tooltip("Visual target object in front")]
+    public GameObject visualTarget;
+
+    [Tooltip("Target is destroyed after being hit")]
+    public bool destroyOnHit = true;
+
+    [Tooltip("Delay before destroying target")]
+    public float destroyDelay = 0.5f;
 
     // --- Private ---
     private Vector3 targetCenter;
+    private bool hasBeenHit = false;
 
     void Start()
     {
         // Get the center of the target at the start of the game
         targetCenter = transform.position;
+
+        if (visualTarget == null)
+        {
+            Transform parent = transform.parent;
+            if (parent != null)
+            {
+                foreach (Transform child in parent)
+                {
+                    if (child != transform && child.name.Contains("Target"))
+                    {
+                        visualTarget = child.gameObject;
+                        Debug.Log("$[TargetScoring] Auto-found visual target: {visualTarget.name}");
+                        break;
+                    }
+                }
+            }
+        }
     }
 
     private void OnCollisionEnter(Collision collision)
     {
+        // Prevent multiple scoring from the same target
+        if (hasBeenHit) return;
+
+        hasBeenHit = true;
+        
         // --- 1. Get Hit Location ---
         // Get the exact point where the arrow hit
         Vector3 hitPoint = collision.contacts[0].point;
@@ -51,10 +80,32 @@ public class TargetScoring : MonoBehaviour
         // Print the score to the console. We use (int) to show a whole number.
         Debug.Log("SCORE: " + (int)finalScore);
 
-        // --- 5. (Future Step) Send to Global Score Manager ---
+        // --- 5. Send to Score Manager and Game Manager ---
         if (ScoreManager.Instance != null)
         {
              ScoreManager.Instance.AddScore((int)finalScore);
+        }
+        else 
+        {
+            Debug.LogWarning("[TargetScoring] ScoreManager.Instance is null!");
+        }
+
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.OnTargetHit((int)finalScore);
+        }
+        else 
+        {
+            Debug.LogWarning("[TargetScoring] GameManager.Instance is null!");
+        }
+
+        if (destroyOnHit)
+        {
+            if (visualTarget != null){
+                Destroy(visualTarget, destroyDelay);
+            }
+
+            Destroy(gameObject, destroyDelay);
         }
     }
 }

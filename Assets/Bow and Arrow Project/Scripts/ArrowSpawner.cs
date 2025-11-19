@@ -36,6 +36,12 @@ public class ArrowSpawner : MonoBehaviour
     {
         if (_bow.isSelected && !_arrowNotched)
         {
+            if (ArrowCounter.Instance != null && !ArrowCounter.Instance.CanShootArrow())
+            {
+                Debug.Log("[ArrowSpawner] Cannot spawn arrow - out of arrows!");
+                return;
+            }
+
             _arrowNotched = true;
             StartCoroutine(DelayedSpawn());
         }
