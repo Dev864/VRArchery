@@ -118,7 +118,7 @@ public class GameManager : MonoBehaviour
         }
     }
     
-    void CompleteLevel()
+void CompleteLevel()
     {
         levelComplete = true;
         
@@ -127,8 +127,7 @@ public class GameManager : MonoBehaviour
             scoreManager.CompleteLevel(currentLevelConfig.levelNumber);
         }
         
-        // Show end screen after a short delay
-        Invoke("ShowEndScreen", 2f);
+        Invoke("LoadNextLevel", 2f);
     }
     
     void ShowEndScreen()
