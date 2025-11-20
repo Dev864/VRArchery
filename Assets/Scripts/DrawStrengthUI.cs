@@ -19,28 +19,14 @@ public class DrawStrengthUI : MonoBehaviour
     private void OnEnable()
     {
         // Hide the slider and label at start
-        if (strengthSlider)
-            strengthSlider.gameObject.SetActive(false);
-        if (strengthLabel)
-            strengthLabel.gameObject.SetActive(false);
-
-        StartCoroutine(WaitForSafetyAgreement());
-    }
-
-    private IEnumerator WaitForSafetyAgreement()
-    {
-        yield return new WaitUntil(() => SafetyWarning.safetyAgreed);
-
-        if (strengthSlider)
-            strengthSlider.gameObject.SetActive(true);
-        if (strengthLabel)
-            strengthLabel.gameObject.SetActive(true);
+        //if (strengthSlider)
+         //   strengthSlider.gameObject.SetActive(false);
+       // if (strengthLabel)
+        //    strengthLabel.gameObject.SetActive(false);
     }
 
     private void Update()
     {
-        if (!SafetyWarning.safetyAgreed)
-            return;
 
         if (bowPull == null || strengthSlider == null)
             return;

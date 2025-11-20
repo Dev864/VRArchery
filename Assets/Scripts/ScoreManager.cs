@@ -1,14 +1,20 @@
 using System;
 using TMPro;
 using UnityEngine;
+using System.Collections;
 
 public class ScoreManager : MonoBehaviour
 {
     public static ScoreManager Instance { get; private set; }
 
     [Header("UI References")]
-    [SerializeField] private TMP_Text lastShotScoreText;
-    [SerializeField] private TMP_Text roundTotalScoreText; 
+    [SerializeField] private TMP_Text lastShotScoreText;  // Shows "+100" with flash effect
+    [SerializeField] private TMP_Text roundTotalScoreText; // Shows round total
+    [SerializeField] private GameObject scorePanel;        // Panel that shows/hides based on safety
+
+    [Header("UI Settings")]
+    [SerializeField] private float lastShotDisplayTime = 2f; // How long to show last shot
+    [SerializeField] private bool waitForSafetyWarning = true; // Enable/disable safety check
 
     // Events for other systems to subscribe to
     public event Action<int> OnShotScored;
@@ -19,6 +25,7 @@ public class ScoreManager : MonoBehaviour
     private int lastShotScore = 0;
     private int totalScore = 0;
     private int totalHits = 0;
+    private bool safetyAgreed = false;
 
     void Awake()
     {
@@ -38,14 +45,64 @@ public class ScoreManager : MonoBehaviour
     void Start()
     {
         LoadTotalScore();
+        
+        // Hide score panel initially
+        if (scorePanel != null)
+        {
+            scorePanel.SetActive(false);
+        }
+        
+        // Hide last shot text initially
+        if (lastShotScoreText != null)
+        {
+            lastShotScoreText.gameObject.SetActive(false);
+        }
+        
+        // Wait for safety warning if enabled
+        if (waitForSafetyWarning)
+        {
+            StartCoroutine(WaitForSafetyAgreement());
+        }
+        else
+        {
+            // No safety warning needed, show immediately
+            safetyAgreed = true;
+            ShowScorePanel();
+        }
+    }
+
+    private IEnumerator WaitForSafetyAgreement()
+    {
+        Debug.Log("[ScoreManager] Waiting for safety agreement...");
+        
+        // Wait until SafetyWarning.safetyAgreed is true
+        yield return new WaitUntil(() => SafetyWarning.safetyAgreed);
+        
+        safetyAgreed = true;
+        ShowScorePanel();
+        
+        Debug.Log("[ScoreManager] Safety agreed, score panel shown");
+    }
+
+    private void ShowScorePanel()
+    {
+        if (scorePanel != null)
+        {
+            scorePanel.SetActive(true);
+        }
+        
         UpdateScoreUI();
     }
 
-    /// <summary>
-    /// Add points to the current level score
-    /// </summary>
     public void AddScore(int points)
     {
+        // Don't process scores until safety is agreed (if enabled)
+        if (waitForSafetyWarning && !safetyAgreed) 
+        {
+            Debug.Log("[ScoreManager] Score blocked - waiting for safety agreement");
+            return;
+        }
+
         lastShotScore = points;
         currentLevelScore += points;
         totalScore += points;
@@ -60,9 +117,6 @@ public class ScoreManager : MonoBehaviour
         Debug.Log($"[ScoreManager] +{points} (Level Score: {currentLevelScore}, Total: {totalScore})");
     }
 
-    /// <summary>
-    /// Reset the score for a new level
-    /// </summary>
     public void ResetLevelScore()
     {
         currentLevelScore = 0;
@@ -75,9 +129,6 @@ public class ScoreManager : MonoBehaviour
         Debug.Log("[ScoreManager] Level score reset");
     }
 
-    /// <summary>
-    /// Save the level completion data
-    /// </summary>
     public void CompleteLevel(int levelNumber)
     {
         // Save the level score
@@ -99,17 +150,14 @@ public class ScoreManager : MonoBehaviour
 
     private void UpdateScoreUI()
     {
-        // Update last shot score (shows "+100" for example)
-        if (lastShotScoreText != null)
+        // Don't show UI until safety is agreed (if enabled)
+        if (waitForSafetyWarning && !safetyAgreed) return;
+
+        // Update last shot score with FLASH effect
+        if (lastShotScoreText != null && lastShotScore > 0)
         {
-            if (lastShotScore > 0)
-            {
-                lastShotScoreText.text = $"+{lastShotScore}";
-            }
-            else
-            {
-                lastShotScoreText.text = ""; // Clear when round starts
-            }
+            StopAllCoroutines(); // Stop any existing flash
+            StartCoroutine(FlashShotScore(lastShotScore));
         }
         
         // Update round total score
@@ -117,6 +165,19 @@ public class ScoreManager : MonoBehaviour
         {
             roundTotalScoreText.text = $"{currentLevelScore}";
         }
+    }
+
+    private IEnumerator FlashShotScore(int points)
+    {
+        // Show the score
+        lastShotScoreText.gameObject.SetActive(true);
+        lastShotScoreText.text = $"+{points}";
+        
+        // Wait for display time
+        yield return new WaitForSeconds(lastShotDisplayTime);
+        
+        // Hide the score
+        lastShotScoreText.gameObject.SetActive(false);
     }
 
     // Legacy method for backward compatibility
@@ -133,4 +194,5 @@ public class ScoreManager : MonoBehaviour
     public int GetTotalHits() => totalHits;
     public int GetLevelScore(int levelNumber) => PlayerPrefs.GetInt($"Level_{levelNumber}_Score", 0);
     public int GetLevelHits(int levelNumber) => PlayerPrefs.GetInt($"Level_{levelNumber}_Hits", 0);
+    public bool IsSafetyAgreed() => safetyAgreed || !waitForSafetyWarning;
 }

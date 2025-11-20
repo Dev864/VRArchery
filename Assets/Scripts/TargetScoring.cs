@@ -80,16 +80,7 @@ public class TargetScoring : MonoBehaviour
         // Print the score to the console. We use (int) to show a whole number.
         Debug.Log("SCORE: " + (int)finalScore);
 
-        // --- 5. Send to Score Manager and Game Manager ---
-        if (ScoreManager.Instance != null)
-        {
-             ScoreManager.Instance.AddScore((int)finalScore);
-        }
-        else 
-        {
-            Debug.LogWarning("[TargetScoring] ScoreManager.Instance is null!");
-        }
-
+        // --- 5. Send to Game Manager ---
         if (GameManager.Instance != null)
         {
             GameManager.Instance.OnTargetHit((int)finalScore);
