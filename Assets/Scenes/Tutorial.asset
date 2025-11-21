@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   levelNumber: 0
   levelName: Tutorial
-  maxArrows: 100
+  maxArrows: 10
   targetCount: 1
   timeLimit: 0

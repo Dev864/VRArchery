@@ -90,6 +90,7 @@ public class GameManager : MonoBehaviour
         // Check if all targets are hit
         if (currentLevelConfig != null && targetsHit >= currentLevelConfig.targetCount)
         {
+            Debug.Log($"entered this function");
             OnAllTargetsHit();
         }
     }
