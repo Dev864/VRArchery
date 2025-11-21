@@ -1,118 +1,193 @@
-using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
+using UnityEngine.SceneManagement;
+using UnityEngine.XR;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation;
+using UnityEngine.XR.Interaction.Toolkit.Interactors;
+using UnityEngine.XR.Interaction.Toolkit.Locomotion.Movement;
+using UnityEngine.XR.Interaction.Toolkit.Locomotion.Turning;
 
-public class EndGameScreen : MonoBehaviour
+using UnityEngine.XR.Interaction.Toolkit.Locomotion;
+
+public class EndingScreen : MonoBehaviour
 {
-    [Header("UI Panel")]
-    [SerializeField] private GameObject summaryPanel;
-    
-    [Header("Text Elements")]
-    [SerializeField] private TMP_Text levelNameText;
-    [SerializeField] private TMP_Text levelScoreText;
-    [SerializeField] private TMP_Text totalScoreText;
-    [SerializeField] private TMP_Text accuracyText;
-    [SerializeField] private TMP_Text arrowsUsedText;
-    [SerializeField] private TMP_Text targetsHitText;
-    
+    [Header("UI Elements")]
+    public GameObject panel;
+    public TMP_Text totalScoreText;
+    public TMP_Text totalArrowsText;
+    public Button replayButton;
+
+    [Header("XR Setup")]
+    public Canvas canvas;
+    public float distanceFromPlayer = 2f;
+    public float heightOffset = 0f;
+    public float holdTimeRequired = 2f;
+    public Color normalColor = Color.white;
+    public Color holdColor = Color.green;
+
+    private InputDevice rightHand;
+    private float holdTimer = 0f;
+    private Image replayImage;
+
+    // Movement references
+    private UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation.TeleportationProvider teleportationProvider;
+    private ContinuousMoveProvider continuousMove;
+    private ContinuousTurnProvider continuousTurn;
+    private SnapTurnProvider snapTurn;
+    private List<UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation.TeleportationAnchor> teleportAnchors = new List<UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation.TeleportationAnchor>();
+    private List<UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation.TeleportationArea> teleportAreas = new List<UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation.TeleportationArea>();
+    private List<UnityEngine.XR.Interaction.Toolkit.Interactors.XRRayInteractor> rayInteractors = new List<UnityEngine.XR.Interaction.Toolkit.Interactors.XRRayInteractor>();
+    private List<UnityEngine.XR.Interaction.Toolkit.Interactors.XRDirectInteractor> directInteractors = new List<UnityEngine.XR.Interaction.Toolkit.Interactors.XRDirectInteractor>();
+    private Dictionary<UnityEngine.XR.Interaction.Toolkit.Interactors.XRRayInteractor, LayerMask> originalRaycastMasks = new Dictionary<UnityEngine.XR.Interaction.Toolkit.Interactors.XRRayInteractor, LayerMask>();
+
     void Start()
     {
-        // Hide panel at start
-        if (summaryPanel != null)
+        SetupCanvas();
+        PositionPanel();
+        DisablePlayerMovement();
+
+        panel.SetActive(true);
+
+        replayImage = replayButton.GetComponent<Image>();
+        if (replayImage != null)
+            replayImage.color = normalColor;
+
+        totalScoreText.text = $"Score: {ScoreManager.Instance.GetTotalScore()}";
+        totalArrowsText.text = $"Arrows: {ScoreManager.Instance.GetTotalHits()}";
+
+        InitializeRightHand();
+    }
+
+    void InitializeRightHand()
+    {
+        List<InputDevice> devices = new List<InputDevice>();
+        InputDevices.GetDevicesAtXRNode(XRNode.RightHand, devices);
+        if (devices.Count > 0)
+            rightHand = devices[0];
+        else
+            Debug.LogWarning("Right hand controller not found.");
+    }
+
+    void Update()
+    {
+        if (!rightHand.isValid)
         {
-            summaryPanel.SetActive(false);
+            InitializeRightHand();
+            return;
+        }
+
+        if (rightHand.TryGetFeatureValue(CommonUsages.triggerButton, out bool pressed))
+        {
+            if (pressed)
+            {
+                holdTimer += Time.deltaTime;
+
+                if (replayImage != null)
+                {
+                    float t = Mathf.Clamp01(holdTimer / holdTimeRequired);
+                    replayImage.color = Color.Lerp(normalColor, holdColor, t);
+                }
+
+                if (holdTimer >= holdTimeRequired)
+                {
+                    ReplayTutorial();
+                }
+            }
+            else
+            {
+                holdTimer = 0f;
+                if (replayImage != null)
+                    replayImage.color = normalColor;
+            }
         }
     }
-    
-    /// <summary>
-    /// Show the end game summary
-    /// </summary>
-    public void ShowSummary()
+
+    void SetupCanvas()
     {
-        if (summaryPanel != null)
-        {
-            summaryPanel.SetActive(true);
-        }
-        
-        // Get data from managers
-        LevelConfig levelConfig = GameManager.Instance?.GetCurrentLevelConfig();
-        int levelScore = ScoreManager.Instance?.GetCurrentLevelScore() ?? 0;
-        int totalScore = ScoreManager.Instance?.GetTotalScore() ?? 0;
-        int totalHits = ScoreManager.Instance?.GetTotalHits() ?? 0;
-        int arrowsShot = ArrowCounter.Instance?.GetArrowsShot() ?? 0;
-        int targetsHit = GameManager.Instance?.GetTargetsHit() ?? 0;
-        
-        // Calculate accuracy
-        float accuracy = ArrowCounter.Instance?.GetAccuracy(totalHits) ?? 0f;
-        
-        // Update UI
-        if (levelNameText != null && levelConfig != null)
-        {
-            levelNameText.text = $"Level {levelConfig.levelNumber}: {levelConfig.levelName}";
-        }
-        
-        if (levelScoreText != null)
-        {
-            levelScoreText.text = $"Level Score: {levelScore}";
-        }
-        
-        if (totalScoreText != null)
-        {
-            totalScoreText.text = $"Total Score: {totalScore}";
-        }
-        
-        if (accuracyText != null)
-        {
-            accuracyText.text = $"Accuracy: {accuracy:F1}%";
-        }
-        
-        if (arrowsUsedText != null)
-        {
-            int maxArrows = ArrowCounter.Instance?.GetMaxArrows() ?? 0;
-            arrowsUsedText.text = $"Arrows Used: {arrowsShot}/{maxArrows}";
-        }
-        
-        if (targetsHitText != null)
-        {
-            int totalTargets = levelConfig?.targetCount ?? 0;
-            targetsHitText.text = $"Targets Hit: {targetsHit}/{totalTargets}";
-        }
-        
-        Debug.Log("[EndGameScreen] Summary displayed");
+        if (canvas == null)
+            canvas = panel.GetComponentInParent<Canvas>();
+
+        canvas.renderMode = RenderMode.WorldSpace;
+        canvas.transform.localScale = Vector3.one * 0.002f;
     }
-    
-    /// <summary>
-    /// Hide the summary panel
-    /// </summary>
-    public void HideSummary()
+
+    void PositionPanel()
     {
-        if (summaryPanel != null)
+        Camera xrCamera = Camera.main;
+        if (xrCamera != null)
         {
-            summaryPanel.SetActive(false);
+            Vector3 forward = xrCamera.transform.forward;
+            forward.y = 0;
+            forward.Normalize();
+
+            Vector3 position = xrCamera.transform.position + forward * distanceFromPlayer;
+            position.y = xrCamera.transform.position.y + heightOffset;
+
+            canvas.transform.position = position;
+            canvas.transform.LookAt(xrCamera.transform);
+            canvas.transform.Rotate(0, 180, 0);
         }
     }
-    
-    // Button callbacks
-    public void OnRestartButton()
+
+    // --- MOVEMENT DISABLING COPIED FROM SafetyWarning ---
+    void DisablePlayerMovement()
     {
-        if (GameManager.Instance != null)
+        GameObject xrOrigin = GameObject.Find("XR Origin") ?? GameObject.Find("XR Origin (XR Rig)") ?? GameObject.Find("XROrigin");
+
+        if (xrOrigin != null)
         {
-            GameManager.Instance.RestartLevel();
+            teleportationProvider = xrOrigin.GetComponentInChildren<UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation.TeleportationProvider>();
+            if (teleportationProvider) teleportationProvider.enabled = false;
+
+            continuousMove = xrOrigin.GetComponentInChildren<ContinuousMoveProvider>();
+            if (continuousMove) continuousMove.enabled = false;
+
+            continuousTurn = xrOrigin.GetComponentInChildren<ContinuousTurnProvider>();
+            if (continuousTurn) continuousTurn.enabled = false;
+
+            snapTurn = xrOrigin.GetComponentInChildren<SnapTurnProvider>();
+            if (snapTurn) snapTurn.enabled = false;
         }
+
+        teleportAnchors.AddRange(FindObjectsOfType<UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation.TeleportationAnchor>());
+        teleportAnchors.ForEach(a => a.enabled = false);
+
+        teleportAreas.AddRange(FindObjectsOfType<UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation.TeleportationArea>());
+        teleportAreas.ForEach(a => a.enabled = false);
+
+        rayInteractors.AddRange(FindObjectsOfType<UnityEngine.XR.Interaction.Toolkit.Interactors.XRRayInteractor>());
+        foreach (var ray in rayInteractors)
+        {
+            originalRaycastMasks[ray] = ray.raycastMask;
+            ray.enableUIInteraction = false;
+        }
+
+        directInteractors.AddRange(FindObjectsOfType<UnityEngine.XR.Interaction.Toolkit.Interactors.XRDirectInteractor>());
+        directInteractors.ForEach(d => d.enabled = false);
     }
-    
-    public void OnNextLevelButton()
+
+    void EnablePlayerMovement()
     {
-        if (GameManager.Instance != null)
-        {
-            GameManager.Instance.LoadNextLevel();
-        }
+        if (teleportationProvider) teleportationProvider.enabled = true;
+        if (continuousMove) continuousMove.enabled = true;
+        if (continuousTurn) continuousTurn.enabled = true;
+        if (snapTurn) snapTurn.enabled = true;
+
+        teleportAnchors.ForEach(a => { if (a) a.enabled = true; });
+        teleportAreas.ForEach(a => { if (a) a.enabled = true; });
+        rayInteractors.ForEach(r => { if (r) r.enableUIInteraction = true; });
+        directInteractors.ForEach(d => { if (d) d.enabled = true; });
+
+        Debug.Log("Movement systems re-enabled");
     }
-    
-    public void OnMainMenuButton()
+
+    void ReplayTutorial()
     {
-        if (GameManager.Instance != null)
-        {
-            GameManager.Instance.LoadMainMenu();
-        }
+        ScoreManager.Instance.ResetLevelScore();
+        EnablePlayerMovement();
+        SceneManager.LoadScene("Tutorial"); // change to your tutorial scene name
     }
 }

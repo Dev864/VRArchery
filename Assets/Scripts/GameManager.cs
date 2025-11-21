@@ -12,8 +12,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private ArrowCounter arrowCounter;
     [SerializeField] private ScoreManager scoreManager;
     
-    [Header("End Game Screen")]
-    [SerializeField] private EndGameScreen endGameScreen;
+    // [Header("End Game Screen")]
+    // [SerializeField] private EndGameScreen endGameScreen;
     
     private bool levelComplete = false;
     private int targetsHit = 0;
@@ -131,17 +131,17 @@ void CompleteLevel()
         Invoke("LoadNextLevel", 2f);
     }
     
-    void ShowEndScreen()
-    {
-        if (endGameScreen != null)
-        {
-            endGameScreen.ShowSummary();
-        }
-        else
-        {
-            Debug.LogWarning("[GameManager] End game screen not assigned. Level complete!");
-        }
-    }
+    // void ShowEndScreen()
+    // {
+    //     if (endGameScreen != null)
+    //     {
+    //         endGameScreen.ShowSummary();
+    //     }
+    //     else
+    //     {
+    //         Debug.LogWarning("[GameManager] End game screen not assigned. Level complete!");
+    //     }
+    // }
     
     /// <summary>
     /// Restart the current level

@@ -24,7 +24,17 @@ namespace UnityEngine.XR.Interaction.Toolkit.Interactables
         {
             base.Awake();
             _lineRenderer = GetComponent<LineRenderer>();
+
+            if (_startPoint == null)
+                _startPoint = transform.Find("StartPoint");
+
+            if (_endPoint == null)
+                _endPoint = transform.Find("EndPoint");
+
+            if (_notchPoint == null)
+                 _notchPoint = transform.Find("NotchPoint")?.gameObject;
         }
+
 
         public void SetPullInteractor(SelectEnterEventArgs args)
         {
@@ -57,6 +67,7 @@ namespace UnityEngine.XR.Interaction.Toolkit.Interactables
                 if (isSelected && _pullingInteractor != null)
                 {
                     Vector3 pullPosition = _pullingInteractor.GetAttachTransform(this).position;
+                    if (pullPosition == null) Debug.Log("something wrong here");
                     float previousPull = pullAmount;
                     pullAmount = CalculatePull(pullPosition);
 

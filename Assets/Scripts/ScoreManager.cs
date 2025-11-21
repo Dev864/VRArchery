@@ -39,6 +39,7 @@ public class ScoreManager : MonoBehaviour
             DontDestroyOnLoad(gameObject);
 
             // Subscribe to scene load
+            totalScore = 0;
             SceneManager.sceneLoaded += OnSceneLoaded;
         }
         else
@@ -50,7 +51,6 @@ public class ScoreManager : MonoBehaviour
 
     void Start()
     {
-        LoadTotalScore();
         
         // If safety check disabled, show score panel immediately
         if (!waitForSafetyWarning)
@@ -120,6 +120,7 @@ public class ScoreManager : MonoBehaviour
         lastShotScore = points;
         currentLevelScore += points;
         totalScore += points;
+        Debug.Log($"{totalScore} on hit {totalHits}");
         totalHits++;
 
         OnShotScored?.Invoke(points);
@@ -134,7 +135,6 @@ public class ScoreManager : MonoBehaviour
     {
         currentLevelScore = 0;
         lastShotScore = 0;
-        totalHits = 0;
 
         OnRoundScoreChanged?.Invoke(currentLevelScore);
         UpdateScoreUI();

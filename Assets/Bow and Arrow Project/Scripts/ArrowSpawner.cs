@@ -24,6 +24,17 @@ public class ArrowSpawner : MonoBehaviour
         }
     }
 
+    // private void OnEnable()
+    // {
+    //     _arrowNotched = false;
+    //     _currentArrow = null;
+
+    //     if (_pullInteractable != null)
+    //     {
+    //         _pullInteractable.Release();  // Reset notch and pull amount
+    //     }
+    // }
+
     private void OnDestroy()
     {
         if (_pullInteractable != null)
