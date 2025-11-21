@@ -10,11 +10,27 @@ using UnityEngine.XR.Interaction.Toolkit.Locomotion.Turning;
 
 public class SafetyWarning : MonoBehaviour
 {
-    [Header("UI Elements")]
+    [Header("Safety Screen")]
     public GameObject panel;
     public Button confirmButton;
     public string agreedKey = "SafetyAgreed";
     public static bool safetyAgreed = false;
+    
+    [Header("Welcome Screen")]
+    public GameObject welcomePanel;
+    public Button welcomeConfirmButton;
+    public float welcomeHoldTimeRequired = 2f;
+
+    private bool welcomeActive = false;
+    private float welcomeHoldTimer = 0f;
+    private Image welcomeConfirmImage;
+
+    [Header("Feedback")]
+    public AudioSource audioSource;
+    public AudioClip confirmSound;
+    public float hapticAmplitude = 0.6f;
+    public float hapticDuration = 0.1f;
+
 
     [Header("XR Setup")]
     public Canvas safetyCanvas;
@@ -28,6 +44,8 @@ public class SafetyWarning : MonoBehaviour
     private float holdTimer = 0f;
     private Image confirmImage;
     private InputDevice rightHand;
+    private InputDevice leftHand;
+
 
     private TeleportationProvider teleportationProvider;
     private List<TeleportationAnchor> teleportAnchors = new List<TeleportationAnchor>();
@@ -45,13 +63,24 @@ public class SafetyWarning : MonoBehaviour
         PositionPanelInFrontOfPlayer();
         DisablePlayerMovement();
 
-        panel.SetActive(true);
-        confirmButton.interactable = true;
+        welcomePanel.SetActive(true);
+        panel.SetActive(false); //safety panel off
+        Debug.Log(panel);
+
+        welcomeActive = true;
+
+        welcomeConfirmImage = welcomeConfirmButton.GetComponent<Image>();
+        if (welcomeConfirmImage != null)
+        {
+            welcomeConfirmImage.color = normalColor;
+        }
+
         confirmImage = confirmButton.GetComponent<Image>();
         if (confirmImage != null)
             confirmImage.color = normalColor;
 
         InitializeRightHandDevice();
+        InitializeLeftHandDevice();
     }
 
     void InitializeRightHandDevice()
@@ -64,47 +93,46 @@ public class SafetyWarning : MonoBehaviour
             Debug.LogWarning("Right hand controller not found.");
     }
 
+    void InitializeLeftHandDevice()
+    {
+        List<InputDevice> devices = new List<InputDevice>();
+        InputDevices.GetDevicesAtXRNode(XRNode.LeftHand, devices);
+        if (devices.Count > 0)
+            leftHand = devices[0];
+        else
+            Debug.LogWarning("Left hand controller not found.");
+    }
+
+
     void Update()
     {
-        if (!rightHand.isValid)
+        // Reinitialize devices if lost
+        if (!rightHand.isValid) InitializeRightHandDevice();
+        if (!leftHand.isValid) InitializeLeftHandDevice();
+
+        bool triggerPressed = false;
+
+        // --- Welcome panel uses RIGHT trigger ---
+        if (welcomeActive)
         {
-            InitializeRightHandDevice();
-            return;
+            rightHand.TryGetFeatureValue(CommonUsages.triggerButton, out triggerPressed);
+        }
+        // --- Safety panel uses LEFT trigger ---
+        else
+        {
+            leftHand.TryGetFeatureValue(CommonUsages.triggerButton, out triggerPressed);
         }
 
-        if (rightHand.TryGetFeatureValue(CommonUsages.triggerButton, out bool triggerPressed))
+        if (triggerPressed)
         {
-            if (triggerPressed)
-            {
-                if (!isHoldingTrigger)
-                {
-                    isHoldingTrigger = true;
-                    holdTimer = 0f;
-                }
-
-                holdTimer += Time.deltaTime;
-
-                if (confirmImage != null)
-                {
-                    float t = Mathf.Clamp01(holdTimer / holdTimeRequired);
-                    confirmImage.color = Color.Lerp(normalColor, holdColor, t);
-                }
-
-                if (holdTimer >= holdTimeRequired)
-                {
-                    OnConfirm();
-                }
-            }
+            if (welcomeActive)
+                HandleWelcomeHold();
             else
-            {
-                if (isHoldingTrigger)
-                {
-                    isHoldingTrigger = false;
-                    holdTimer = 0f;
-                    if (confirmImage != null)
-                        confirmImage.color = normalColor;
-                }
-            }
+                HandleSafetyHold();
+        }
+        else
+        {
+            ResetHoldVisuals();
         }
     }
 
@@ -197,14 +225,95 @@ public class SafetyWarning : MonoBehaviour
         Debug.Log("Movement systems re-enabled");
     }
 
+    void HandleWelcomeHold()
+    {
+        welcomeHoldTimer += Time.deltaTime;
+        
+        if (welcomeConfirmImage != null)
+        {
+        float t = Mathf.Clamp01(welcomeHoldTimer / welcomeHoldTimeRequired);
+        welcomeConfirmImage.color = Color.Lerp(normalColor, holdColor, t);
+        }
+
+        if (welcomeHoldTimer >= welcomeHoldTimeRequired)
+        {
+            ShowSafetyPanel();
+        }
+    }
+
+    void HandleSafetyHold()
+    {
+        holdTimer += Time.deltaTime;
+
+        if (confirmImage != null)
+        {
+            float t = Mathf.Clamp01(holdTimer / holdTimeRequired);
+            confirmImage.color = Color.Lerp(normalColor, holdColor, t);
+        }
+
+        if (holdTimer >= holdTimeRequired)
+        {
+            OnConfirm();
+        }
+    }
+
+    void ResetHoldVisuals()
+    {
+        welcomeHoldTimer = 0f;
+        holdTimer = 0f;
+
+        if (welcomeConfirmImage != null)
+            welcomeConfirmImage.color = normalColor;
+
+        if (confirmImage != null)
+            confirmImage.color = normalColor;
+    }
+
+    void ShowSafetyPanel()
+    {
+        if (audioSource && confirmSound)
+        {
+            audioSource.PlayOneShot(confirmSound);
+        }
+
+        // HAPTICS (right trigger was used)
+        SendHaptics(rightHand, hapticAmplitude, hapticDuration);
+
+        welcomePanel.SetActive(false);
+        panel.SetActive(true);
+
+        welcomeActive = false;
+
+        Debug.Log("Welcome panel acknowledged via trigger hold!");
+    }
+
+    void SendHaptics(InputDevice device, float amplitude, float duration)
+    {
+        if (device.TryGetHapticCapabilities(out HapticCapabilities capabilities) && capabilities.supportsImpulse)
+        {
+            device.SendHapticImpulse(0, amplitude, duration);
+        }
+    }
+
+
     void OnConfirm()
     {
+        if (audioSource && confirmSound)
+        {
+            audioSource.PlayOneShot(confirmSound);
+        }
+
+        // HAPTICS (left trigger was used)
+        SendHaptics(leftHand, hapticAmplitude, hapticDuration);
+
         PlayerPrefs.SetInt(agreedKey, 1);
         PlayerPrefs.Save();
         safetyAgreed = true;
+
         EnablePlayerMovement();
         panel.SetActive(false);
         enabled = false;
+        
         Debug.Log("Safety warning acknowledged via trigger hold!");
     }
 
