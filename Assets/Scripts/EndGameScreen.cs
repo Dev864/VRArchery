@@ -55,8 +55,9 @@ public class EndingScreen : MonoBehaviour
         if (replayImage != null)
             replayImage.color = normalColor;
 
-        totalScoreText.text = $"Score: {ScoreManager.Instance.GetTotalScore()}";
-        totalArrowsText.text = $"Arrows: {ScoreManager.Instance.GetTotalHits()}";
+        
+        totalArrowsText.text = $"Total Arrows: {ScoreManager.Instance.GetTotalHits()}";
+        totalScoreText.text = $"Total Score: {ScoreManager.Instance.GetTotalScore()}";
 
         InitializeRightHand();
     }
