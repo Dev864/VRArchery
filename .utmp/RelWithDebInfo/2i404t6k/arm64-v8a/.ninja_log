@@ -1,0 +1,10 @@
+# ninja log v5
+97	7009	7854833756733600	GameActivity/CMakeFiles/game.dir/UGAInputKeyEvent.cpp.o	6f0a0fa43c89192d
+173	7068	7854833756713307	GameActivity/CMakeFiles/game.dir/UGAEntry.cpp.o	e20f5e9c632bcb05
+35	7116	7854833757633969	GameActivity/CMakeFiles/game.dir/UGAConfiguration.cpp.o	2617d4e3f3242a37
+240	7134	7854833758067806	GameActivity/CMakeFiles/game.dir/UGAInputMotionEvent.cpp.o	de845e488527231f
+70	7346	7854833760852445	GameActivity/CMakeFiles/game.dir/UGADebug.cpp.o	d37c10b322d1eed7
+139	7762	7854833765049112	GameActivity/CMakeFiles/game.dir/UGAInput.cpp.o	1677ef94aa8b0310
+202	7790	7854833765299333	GameActivity/CMakeFiles/game.dir/UGASoftKeyboard.cpp.o	37381a3967b55db9
+1	7930	7854833766484837	GameActivity/CMakeFiles/game.dir/UGAApplication.cpp.o	961343d5200aaf4f
+7931	8385	7854833771353876	C:/Users/noahs/OneDrive/Documents/GitHub/AimHighArchery/AimHighArchery/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/build/intermediates/cxx/RelWithDebInfo/2i404t6k/obj/arm64-v8a/libgame.so	c1bf441e1c9dac0d
