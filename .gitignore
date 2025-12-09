@@ -6,7 +6,7 @@
 [Bb]uilds/
 [Ll]ogs/
 [Pp]ackages/com.unity.package-manager.cache/
-#UserSettings/
+UserSettings/Layouts/
 MemoryCaptures/
 
 # Build outputs
