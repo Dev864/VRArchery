@@ -56,8 +56,11 @@ public class EndingScreen : MonoBehaviour
             replayImage.color = normalColor;
 
         
-        totalArrowsText.text = $"Total Arrows: {ScoreManager.Instance.GetTotalHits()}";
-        totalScoreText.text = $"Total Score: {ScoreManager.Instance.GetTotalScore()}";
+        // totalArrowsText.text = $"Total Arrows: {ScoreManager.Instance.GetTotalHits()}";
+        // totalScoreText.text = $"Total Score: {ScoreManager.Instance.GetTotalScore()}";
+
+        totalArrowsText.text = $"Total Arrows: {PlayerPrefs.GetInt("TotalHits", 0)}";
+        totalScoreText.text = $"Total Score: {PlayerPrefs.GetInt("TotalScore", 0)}";
 
         InitializeRightHand();
     }
