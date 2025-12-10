@@ -23,6 +23,7 @@ public class GameManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
+            //if this works the push worked
         }
         else
         {
