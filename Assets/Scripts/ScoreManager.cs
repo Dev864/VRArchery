@@ -23,6 +23,7 @@ public class ScoreManager : MonoBehaviour
     public event Action<int> OnLevelCompleted;
 
     private int currentLevelScore = 0;
+    private int currentLevelHits = 0; // added this - didnt break
     private int lastShotScore = 0;
     private int totalScore = 0;
     private int totalHits = 0;
@@ -119,6 +120,7 @@ public class ScoreManager : MonoBehaviour
 
         lastShotScore = points;
         currentLevelScore += points;
+        currentLevelHits++; // added this - didnt break
         totalScore += points;
         Debug.Log($"{totalScore} on hit {totalHits}");
         totalHits++;
@@ -134,6 +136,7 @@ public class ScoreManager : MonoBehaviour
     public void ResetLevelScore()
     {
         currentLevelScore = 0;
+        currentLevelHits = 0; // added this - didnt break
         lastShotScore = 0;
 
         OnRoundScoreChanged?.Invoke(currentLevelScore);
@@ -146,7 +149,8 @@ public class ScoreManager : MonoBehaviour
     {
         // Save scores
         PlayerPrefs.SetInt($"Level_{levelNumber}_Score", currentLevelScore);
-        PlayerPrefs.SetInt($"Level_{levelNumber}_Hits", totalHits);
+        PlayerPrefs.SetInt($"Level_{levelNumber}_Hits", currentLevelHits); // added this - didnt break
+        PlayerPrefs.SetInt($"TotalHits", totalHits);
         PlayerPrefs.SetInt("TotalScore", totalScore);
         PlayerPrefs.Save();
 

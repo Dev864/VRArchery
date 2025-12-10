@@ -1,0 +1,2 @@
+C:\Users\niaro\OneDrive - Clemson University\college\grad_year\vr\archery_project\AimHighArchery\Library\Bee\Android\Prj\IL2CPP\Gradle\unityLibrary\src\main\cpp\CMakeLists.txt
+C:\Users\niaro\OneDrive - Clemson University\college\grad_year\vr\archery_project\AimHighArchery\Library\Bee\Android\Prj\IL2CPP\Gradle\unityLibrary\src\main\cpp\GameActivity\CMakeLists.txt

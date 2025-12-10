@@ -10,7 +10,7 @@ public class GameManager : MonoBehaviour
     
     [Header("Managers")]
     [SerializeField] private ArrowCounter arrowCounter;
-    [SerializeField] private ScoreManager scoreManager;
+    //[SerializeField] private ScoreManager scoreManager;
     
     // [Header("End Game Screen")]
     // [SerializeField] private EndGameScreen endGameScreen;
@@ -58,15 +58,16 @@ public class GameManager : MonoBehaviour
             Debug.LogError("[GameManager] ArrowCounter not assigned!");
         }
         
+        // commented this out - didnt break
         // Reset score for new level
-        if (scoreManager != null)
-        {
-            scoreManager.ResetLevelScore();
-        }
-        else
-        {
-            Debug.LogError("[GameManager] ScoreManager not assigned!");
-        }
+        // if (scoreManager != null)
+        // {
+        //     scoreManager.ResetLevelScore();
+        // }
+        // else
+        // {
+        //     Debug.LogError("[GameManager] ScoreManager not assigned!");
+        // }
         
         levelComplete = false;
         targetsHit = 0;
@@ -81,9 +82,9 @@ public class GameManager : MonoBehaviour
         
         targetsHit++;
         
-        if (scoreManager != null)
+        if (ScoreManager.Instance != null) // added this
         {
-            scoreManager.AddScore(points);
+            ScoreManager.Instance.AddScore(points); // added this
         }
         
         Debug.Log($"[GameManager] Target hit! Points: {points}, Total targets hit: {targetsHit}");
@@ -124,9 +125,9 @@ void CompleteLevel()
     {
         levelComplete = true;
         
-        if (scoreManager != null && currentLevelConfig != null)
+        if (ScoreManager.Instance != null && currentLevelConfig != null) // added this
         {
-            scoreManager.CompleteLevel(currentLevelConfig.levelNumber);
+            ScoreManager.Instance.CompleteLevel(currentLevelConfig.levelNumber); // added this
         }
         
         Invoke("LoadNextLevel", 2f);

@@ -1,0 +1,19 @@
+# ninja log v5
+40	4654	7870327945504793	GameActivity/CMakeFiles/game.dir/UGAInputKeyEvent.cpp.o	2180a97ea179315b
+53	4700	7870327945726302	GameActivity/CMakeFiles/game.dir/UGAEntry.cpp.o	ccc140435b1ca37e
+67	5205	7870327951498050	GameActivity/CMakeFiles/game.dir/UGASoftKeyboard.cpp.o	e0982f74c3ec8dd6
+11	4726	7870327946621459	GameActivity/CMakeFiles/game.dir/UGAConfiguration.cpp.o	900d8d3a4aee1cb8
+5779	6312	7870327962681878	C:/Users/niaro/OneDrive - Clemson University/college/grad_year/vr/archery_project/AimHighArchery/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/build/intermediates/cxx/RelWithDebInfo/n3b3z3xu/obj/arm64-v8a/libgame.so	74edf97f3a76dcb8
+21	4882	7870327948162552	GameActivity/CMakeFiles/game.dir/UGADebug.cpp.o	db3df96b5be2fc0d
+78	4733	7870327946778669	GameActivity/CMakeFiles/game.dir/UGAInputMotionEvent.cpp.o	3b53cf973dc2e219
+30	5409	7870327953603120	GameActivity/CMakeFiles/game.dir/UGAInput.cpp.o	f199c213bb05398b
+1	5779	7870327957171970	GameActivity/CMakeFiles/game.dir/UGAApplication.cpp.o	d88082c021e68adb
+138	4369	7870369381729220	GameActivity/CMakeFiles/game.dir/UGAInputKeyEvent.cpp.o	2180a97ea179315b
+43	4394	7870369381971266	GameActivity/CMakeFiles/game.dir/UGAEntry.cpp.o	ccc140435b1ca37e
+53	4440	7870369382421043	GameActivity/CMakeFiles/game.dir/UGAConfiguration.cpp.o	900d8d3a4aee1cb8
+148	4454	7870369382566513	GameActivity/CMakeFiles/game.dir/UGAInputMotionEvent.cpp.o	3b53cf973dc2e219
+33	4584	7870369383904889	GameActivity/CMakeFiles/game.dir/UGADebug.cpp.o	db3df96b5be2fc0d
+159	4825	7870369386335081	GameActivity/CMakeFiles/game.dir/UGASoftKeyboard.cpp.o	e0982f74c3ec8dd6
+63	4901	7870369387095652	GameActivity/CMakeFiles/game.dir/UGAInput.cpp.o	f199c213bb05398b
+21	5079	7870369388869281	GameActivity/CMakeFiles/game.dir/UGAApplication.cpp.o	d88082c021e68adb
+5079	5280	7870369390937648	C:/Users/niaro/OneDrive - Clemson University/college/grad_year/vr/archery_project/AimHighArchery/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/build/intermediates/cxx/RelWithDebInfo/n3b3z3xu/obj/arm64-v8a/libgame.so	74edf97f3a76dcb8
