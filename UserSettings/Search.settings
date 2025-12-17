@@ -87,6 +87,8 @@ searchItemFavorites = [
 savedSearchesSortOrder = 0
 showSavedSearchPanel = false
 hideTabs = false
+indexOnEditorStartup = true
+logIndexingPerformanceReport = false
 expandedQueries = [
 ]
 queryBuilder = true
