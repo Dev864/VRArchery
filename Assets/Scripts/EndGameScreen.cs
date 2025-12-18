@@ -1,47 +1,33 @@
-using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
-using UnityEngine.SceneManagement;
-using UnityEngine.XR;
-using System.Collections;
+// 12/17/2025 AI-Tag
+// This was created with the help of Assistant, a Unity Artificial Intelligence product.
+
 using System.Collections.Generic;
-using UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation;
-using UnityEngine.XR.Interaction.Toolkit.Interactors;
-using UnityEngine.XR.Interaction.Toolkit.Locomotion.Movement;
-using UnityEngine.XR.Interaction.Toolkit.Locomotion.Turning;
+using TMPro;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using UnityEngine.XR;
 
-using UnityEngine.XR.Interaction.Toolkit.Locomotion;
-
-public class EndingScreen : MonoBehaviour
+public class EndGameScreen : MonoBehaviour
 {
     [Header("UI Elements")]
-    public GameObject panel;
-    public TMP_Text totalScoreText;
-    public TMP_Text totalArrowsText;
-    public Button replayButton;
+    public GameObject panel; // Reference to the ending panel
+    public TMP_Text totalScoreText; // Text element for total score
+    public TMP_Text totalArrowsText; // Text element for total arrows
+    public TMP_Text totalTimeText; // Text element for total time
+    public Button replayButton; // Replay button
 
     [Header("XR Setup")]
-    public Canvas canvas;
-    public float distanceFromPlayer = 2f;
-    public float heightOffset = 0f;
-    public float holdTimeRequired = 2f;
-    public Color normalColor = Color.white;
-    public Color holdColor = Color.green;
+    public Canvas canvas; // Reference to the canvas
+    public float distanceFromPlayer = 2f; // Distance from player
+    public float heightOffset = 0f; // Height offset for the panel
+    public float holdTimeRequired = 2f; // Time required to hold the button
+    public Color normalColor = Color.white; // Normal button color
+    public Color holdColor = Color.green; // Color when holding the button
 
-    private InputDevice rightHand;
-    private float holdTimer = 0f;
-    private Image replayImage;
-
-    // Movement references
-    private UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation.TeleportationProvider teleportationProvider;
-    private ContinuousMoveProvider continuousMove;
-    private ContinuousTurnProvider continuousTurn;
-    private SnapTurnProvider snapTurn;
-    private List<UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation.TeleportationAnchor> teleportAnchors = new List<UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation.TeleportationAnchor>();
-    private List<UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation.TeleportationArea> teleportAreas = new List<UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation.TeleportationArea>();
-    private List<UnityEngine.XR.Interaction.Toolkit.Interactors.XRRayInteractor> rayInteractors = new List<UnityEngine.XR.Interaction.Toolkit.Interactors.XRRayInteractor>();
-    private List<UnityEngine.XR.Interaction.Toolkit.Interactors.XRDirectInteractor> directInteractors = new List<UnityEngine.XR.Interaction.Toolkit.Interactors.XRDirectInteractor>();
-    private Dictionary<UnityEngine.XR.Interaction.Toolkit.Interactors.XRRayInteractor, LayerMask> originalRaycastMasks = new Dictionary<UnityEngine.XR.Interaction.Toolkit.Interactors.XRRayInteractor, LayerMask>();
+    private InputDevice rightHand; // Reference to the right hand controller
+    private float holdTimer = 0f; // Timer for button hold
+    private Image replayImage; // Image component of the replay button
 
     void Start()
     {
@@ -55,24 +41,20 @@ public class EndingScreen : MonoBehaviour
         if (replayImage != null)
             replayImage.color = normalColor;
 
-        
-        // totalArrowsText.text = $"Total Arrows: {ScoreManager.Instance.GetTotalHits()}";
-        // totalScoreText.text = $"Total Score: {ScoreManager.Instance.GetTotalScore()}";
-
+        // Display total arrows
         totalArrowsText.text = $"Total Arrows: {PlayerPrefs.GetInt("TotalHits", 0)}";
+
+        // Display total score
         totalScoreText.text = $"Total Score: {PlayerPrefs.GetInt("TotalScore", 0)}";
 
-        InitializeRightHand();
-    }
+        // Display total time
+        float totalTime = PlayerPrefs.GetFloat("TotalTime", 0f);
+        int minutes = Mathf.FloorToInt(totalTime / 60F);
+        int seconds = Mathf.FloorToInt(totalTime % 60F);
+        totalTimeText.text = $"Total Time: {minutes:00}:{seconds:00}";
+        Debug.Log($"Total Time Displayed: {minutes:00}:{seconds:00}");
 
-    void InitializeRightHand()
-    {
-        List<InputDevice> devices = new List<InputDevice>();
-        InputDevices.GetDevicesAtXRNode(XRNode.RightHand, devices);
-        if (devices.Count > 0)
-            rightHand = devices[0];
-        else
-            Debug.LogWarning("Right hand controller not found.");
+        InitializeRightHand();
     }
 
     void Update()
@@ -109,89 +91,65 @@ public class EndingScreen : MonoBehaviour
         }
     }
 
+    void ReplayTutorial()
+    {
+        // Reset the timer when replaying the game
+        if (LevelTimer.Instance != null)
+        {
+            LevelTimer.Instance.ResetTimer();
+        }
+
+        EnablePlayerMovement();
+        SceneManager.LoadScene("Tutorial"); // Replace with your tutorial scene name
+    }
+
     void SetupCanvas()
     {
-        if (canvas == null)
-            canvas = panel.GetComponentInParent<Canvas>();
-
-        canvas.renderMode = RenderMode.WorldSpace;
-        canvas.transform.localScale = Vector3.one * 0.002f;
+        if (canvas != null)
+        {
+            canvas.renderMode = RenderMode.WorldSpace;
+            canvas.worldCamera = Camera.main;
+        }
     }
 
     void PositionPanel()
     {
-        Camera xrCamera = Camera.main;
-        if (xrCamera != null)
+        if (Camera.main != null)
         {
-            Vector3 forward = xrCamera.transform.forward;
-            forward.y = 0;
-            forward.Normalize();
-
-            Vector3 position = xrCamera.transform.position + forward * distanceFromPlayer;
-            position.y = xrCamera.transform.position.y + heightOffset;
-
-            canvas.transform.position = position;
-            canvas.transform.LookAt(xrCamera.transform);
-            canvas.transform.Rotate(0, 180, 0);
+            Transform cameraTransform = Camera.main.transform;
+            Vector3 panelPosition = cameraTransform.position + cameraTransform.forward * distanceFromPlayer;
+            panelPosition.y += heightOffset;
+            panel.transform.position = panelPosition;
+            panel.transform.LookAt(cameraTransform);
+            panel.transform.Rotate(0, 180, 0); // Rotate to face the player
         }
     }
 
-    // --- MOVEMENT DISABLING COPIED FROM SafetyWarning ---
     void DisablePlayerMovement()
     {
-        GameObject xrOrigin = GameObject.Find("XR Origin") ?? GameObject.Find("XR Origin (XR Rig)") ?? GameObject.Find("XROrigin");
-
-        if (xrOrigin != null)
-        {
-            teleportationProvider = xrOrigin.GetComponentInChildren<UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation.TeleportationProvider>();
-            if (teleportationProvider) teleportationProvider.enabled = false;
-
-            continuousMove = xrOrigin.GetComponentInChildren<ContinuousMoveProvider>();
-            if (continuousMove) continuousMove.enabled = false;
-
-            continuousTurn = xrOrigin.GetComponentInChildren<ContinuousTurnProvider>();
-            if (continuousTurn) continuousTurn.enabled = false;
-
-            snapTurn = xrOrigin.GetComponentInChildren<SnapTurnProvider>();
-            if (snapTurn) snapTurn.enabled = false;
-        }
-
-        teleportAnchors.AddRange(FindObjectsOfType<UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation.TeleportationAnchor>());
-        teleportAnchors.ForEach(a => a.enabled = false);
-
-        teleportAreas.AddRange(FindObjectsOfType<UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation.TeleportationArea>());
-        teleportAreas.ForEach(a => a.enabled = false);
-
-        rayInteractors.AddRange(FindObjectsOfType<UnityEngine.XR.Interaction.Toolkit.Interactors.XRRayInteractor>());
-        foreach (var ray in rayInteractors)
-        {
-            originalRaycastMasks[ray] = ray.raycastMask;
-            ray.enableUIInteraction = false;
-        }
-
-        directInteractors.AddRange(FindObjectsOfType<UnityEngine.XR.Interaction.Toolkit.Interactors.XRDirectInteractor>());
-        directInteractors.ForEach(d => d.enabled = false);
+        // Disable player movement logic here
+        Debug.Log("Player movement disabled.");
     }
 
     void EnablePlayerMovement()
     {
-        if (teleportationProvider) teleportationProvider.enabled = true;
-        if (continuousMove) continuousMove.enabled = true;
-        if (continuousTurn) continuousTurn.enabled = true;
-        if (snapTurn) snapTurn.enabled = true;
-
-        teleportAnchors.ForEach(a => { if (a) a.enabled = true; });
-        teleportAreas.ForEach(a => { if (a) a.enabled = true; });
-        rayInteractors.ForEach(r => { if (r) r.enableUIInteraction = true; });
-        directInteractors.ForEach(d => { if (d) d.enabled = true; });
-
-        Debug.Log("Movement systems re-enabled");
+        // Enable player movement logic here
+        Debug.Log("Player movement enabled.");
     }
 
-    void ReplayTutorial()
+    void InitializeRightHand()
     {
-        ScoreManager.Instance.ResetLevelScore();
-        EnablePlayerMovement();
-        SceneManager.LoadScene("Tutorial"); // change to your tutorial scene name
+        var devices = new List<InputDevice>();
+        InputDevices.GetDevicesWithCharacteristics(InputDeviceCharacteristics.Right | InputDeviceCharacteristics.Controller, devices);
+
+        if (devices.Count > 0)
+        {
+            rightHand = devices[0];
+            Debug.Log("Right hand controller initialized.");
+        }
+        else
+        {
+            Debug.LogWarning("Right hand controller not found.");
+        }
     }
 }

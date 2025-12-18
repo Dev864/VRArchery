@@ -296,6 +296,7 @@ public class SafetyWarning : MonoBehaviour
     }
 
 
+
     void OnConfirm()
     {
         if (audioSource && confirmSound)
@@ -313,7 +314,13 @@ public class SafetyWarning : MonoBehaviour
         EnablePlayerMovement();
         panel.SetActive(false);
         enabled = false;
-        
+
+        // Start the timer when the safety panel is confirmed
+        if (LevelTimer.Instance != null)
+        {
+            LevelTimer.Instance.StartTimer();
+        }
+
         Debug.Log("Safety warning acknowledged via trigger hold!");
     }
 

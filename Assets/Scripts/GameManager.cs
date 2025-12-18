@@ -120,19 +120,27 @@ public class GameManager : MonoBehaviour
             CompleteLevel();
         }
     }
-    
-void CompleteLevel()
+
+    void CompleteLevel()
     {
         levelComplete = true;
-        
-        if (ScoreManager.Instance != null && currentLevelConfig != null) // added this
+
+        if (ScoreManager.Instance != null && currentLevelConfig != null)
         {
-            ScoreManager.Instance.CompleteLevel(currentLevelConfig.levelNumber); // added this
+            ScoreManager.Instance.CompleteLevel(currentLevelConfig.levelNumber);
         }
-        
+
+        // Stop and save the timer when Level 2 ends
+        if (currentLevelConfig.levelNumber == 2 && LevelTimer.Instance != null)
+        {
+            LevelTimer.Instance.StopTimer();
+            LevelTimer.Instance.SaveTotalTime(); // Save the total time before resetting
+            LevelTimer.Instance.ResetTimer(); // Reset the timer
+        }
+
         Invoke("LoadNextLevel", 2f);
     }
-    
+
     // void ShowEndScreen()
     // {
     //     if (endGameScreen != null)
@@ -144,7 +152,7 @@ void CompleteLevel()
     //         Debug.LogWarning("[GameManager] End game screen not assigned. Level complete!");
     //     }
     // }
-    
+
     /// <summary>
     /// Restart the current level
     /// </summary>
