@@ -33,15 +33,15 @@ public class ScoreManager : MonoBehaviour
 
     void Awake()
     {
-        // Singleton setup
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject);
+            // DontDestroyOnLoad(gameObject); // You can remove this line, it's useless for child objects!
 
-            // Subscribe to scene load
-            totalScore = 0;
             SceneManager.sceneLoaded += OnSceneLoaded;
+
+            // THIS IS THE KEY FIX
+            LoadSavedProgress();
         }
         else
         {
@@ -52,7 +52,6 @@ public class ScoreManager : MonoBehaviour
 
     void Start()
     {
-        
         // If safety check disabled, show score panel immediately
         if (!waitForSafetyWarning)
         {
@@ -66,6 +65,14 @@ public class ScoreManager : MonoBehaviour
     void OnDestroy()
     {
         SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void LoadSavedProgress()
+    {
+        // Force the new manager to remember previous hits/score
+        totalScore = PlayerPrefs.GetInt("TotalScore", 0);
+        totalHits = PlayerPrefs.GetInt("TotalHits", 0);
+        Debug.Log($"[ScoreManager] Restored Progress - Score: {totalScore}, Hits: {totalHits}");
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -159,11 +166,6 @@ public class ScoreManager : MonoBehaviour
         Debug.Log($"[ScoreManager] Level {levelNumber} completed! Score: {currentLevelScore}, Hits: {totalHits}");
     }
 
-    private void LoadTotalScore()
-    {
-        totalScore = PlayerPrefs.GetInt("TotalScore", 0);
-    }
-
     private void UpdateScoreUI()
     {
         if (waitForSafetyWarning && !safetyAgreed) return;
@@ -186,6 +188,21 @@ public class ScoreManager : MonoBehaviour
             roundTotalScoreText.text = $"{currentLevelScore}";
     }
 
+    public void ResetGameSession()
+    {
+        // Reset internal variables
+        totalScore = 0;
+        totalHits = 0;
+
+        // Wipe the saved data from the disk
+        PlayerPrefs.DeleteKey("TotalScore");
+        PlayerPrefs.DeleteKey("TotalHits");
+
+        // Optional: Delete individual level records if you want a full wipe
+        // PlayerPrefs.DeleteAll(); 
+
+        Debug.Log("[ScoreManager] NEW GAME STARTED - Old data wiped.");
+    }
 
     private IEnumerator FlashShotScore(int points)
     {

@@ -31,11 +31,24 @@ public class GameManager : MonoBehaviour
             return;
         }
     }
-    
+
+
     void Start()
     {
         if (currentLevelConfig != null)
         {
+            // 1. CHECK IF THIS IS THE TUTORIAL
+            // We check if the level number is 0 OR if the name is "Tutorial"
+            if (currentLevelConfig.levelNumber == 0 || currentLevelConfig.levelName == "Tutorial")
+            {
+                // 2. IF IT IS, WIPE THE SCORE MEMORY
+                if (ScoreManager.Instance != null)
+                {
+                    ScoreManager.Instance.ResetGameSession();
+                }
+            }
+
+            // 3. LOAD THE LEVEL NORMALLY
             LoadLevel(currentLevelConfig);
         }
         else
@@ -43,7 +56,7 @@ public class GameManager : MonoBehaviour
             Debug.LogError("[GameManager] No LevelConfig assigned!");
         }
     }
-    
+
     void LoadLevel(LevelConfig config)
     {
         Debug.Log($"[GameManager] Loading Level {config.levelNumber}: {config.levelName}");
@@ -130,8 +143,8 @@ public class GameManager : MonoBehaviour
             ScoreManager.Instance.CompleteLevel(currentLevelConfig.levelNumber);
         }
 
-        // Stop and save the timer when Level 2 ends
-        if (currentLevelConfig.levelNumber == 2 && LevelTimer.Instance != null)
+        // Stop and save the timer when last level ends (CURRENTLY 3)
+        if (currentLevelConfig.levelNumber == 3 && LevelTimer.Instance != null)
         {
             LevelTimer.Instance.StopTimer();
             LevelTimer.Instance.SaveTotalTime(); // Save the total time before resetting

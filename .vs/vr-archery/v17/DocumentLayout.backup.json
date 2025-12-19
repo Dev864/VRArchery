@@ -3,19 +3,23 @@
   "WorkspaceRootPath": "C:\\Users\\devin\\Desktop\\Programs\\Gitlab\\vr-archery\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{683E0999-2974-4246-1B28-D9809F1AA839}|Assembly-CSharp.csproj|c:\\users\\devin\\desktop\\programs\\gitlab\\vr-archery\\assets\\scripts\\leveltimer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{683E0999-2974-4246-1B28-D9809F1AA839}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\leveltimer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{683E0999-2974-4246-1B28-D9809F1AA839}|Assembly-CSharp.csproj|c:\\users\\devin\\desktop\\programs\\gitlab\\vr-archery\\assets\\scripts\\gamemanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{683E0999-2974-4246-1B28-D9809F1AA839}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\gamemanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{683E0999-2974-4246-1B28-D9809F1AA839}|Assembly-CSharp.csproj|c:\\users\\devin\\desktop\\programs\\gitlab\\vr-archery\\assets\\scripts\\safetywarning.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{683E0999-2974-4246-1B28-D9809F1AA839}|Assembly-CSharp.csproj|C:\\Users\\devin\\Desktop\\Programs\\Gitlab\\vr-archery\\assets\\scripts\\safetywarning.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{683E0999-2974-4246-1B28-D9809F1AA839}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\safetywarning.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{683E0999-2974-4246-1B28-D9809F1AA839}|Assembly-CSharp.csproj|c:\\users\\devin\\desktop\\programs\\gitlab\\vr-archery\\assets\\scripts\\endgamescreen.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{683E0999-2974-4246-1B28-D9809F1AA839}|Assembly-CSharp.csproj|c:\\users\\devin\\desktop\\programs\\gitlab\\vr-archery\\assets\\scripts\\scoremanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{683E0999-2974-4246-1B28-D9809F1AA839}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\scoremanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{683E0999-2974-4246-1B28-D9809F1AA839}|Assembly-CSharp.csproj|C:\\Users\\devin\\Desktop\\Programs\\Gitlab\\vr-archery\\assets\\scripts\\leveltimer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{683E0999-2974-4246-1B28-D9809F1AA839}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\leveltimer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{683E0999-2974-4246-1B28-D9809F1AA839}|Assembly-CSharp.csproj|C:\\Users\\devin\\Desktop\\Programs\\Gitlab\\vr-archery\\assets\\scripts\\endgamescreen.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{683E0999-2974-4246-1B28-D9809F1AA839}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\endgamescreen.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
@@ -26,11 +30,24 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Document",
               "DocumentIndex": 2,
+              "Title": "ScoreManager.cs",
+              "DocumentMoniker": "C:\\Users\\devin\\Desktop\\Programs\\Gitlab\\vr-archery\\Assets\\Scripts\\ScoreManager.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\ScoreManager.cs",
+              "ToolTip": "C:\\Users\\devin\\Desktop\\Programs\\Gitlab\\vr-archery\\Assets\\Scripts\\ScoreManager.cs",
+              "RelativeToolTip": "Assets\\Scripts\\ScoreManager.cs",
+              "ViewState": "AgIAABAAAAAAAAAAAAAgwD4AAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-19T01:16:45.324Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
               "Title": "SafetyWarning.cs",
               "DocumentMoniker": "C:\\Users\\devin\\Desktop\\Programs\\Gitlab\\vr-archery\\Assets\\Scripts\\SafetyWarning.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\SafetyWarning.cs",
@@ -43,39 +60,39 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
               "Title": "GameManager.cs",
               "DocumentMoniker": "C:\\Users\\devin\\Desktop\\Programs\\Gitlab\\vr-archery\\Assets\\Scripts\\GameManager.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\GameManager.cs",
               "ToolTip": "C:\\Users\\devin\\Desktop\\Programs\\Gitlab\\vr-archery\\Assets\\Scripts\\GameManager.cs",
               "RelativeToolTip": "Assets\\Scripts\\GameManager.cs",
-              "ViewState": "AgIAAGcAAAAAAAAAAAAcwIsAAAAFAAAAAAAAAA==",
+              "ViewState": "AgIAAAUAAAAAAAAAAAAQwCEAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-12-18T00:36:14.546Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 4,
               "Title": "EndGameScreen.cs",
               "DocumentMoniker": "C:\\Users\\devin\\Desktop\\Programs\\Gitlab\\vr-archery\\Assets\\Scripts\\EndGameScreen.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\EndGameScreen.cs",
               "ToolTip": "C:\\Users\\devin\\Desktop\\Programs\\Gitlab\\vr-archery\\Assets\\Scripts\\EndGameScreen.cs",
               "RelativeToolTip": "Assets\\Scripts\\EndGameScreen.cs",
-              "ViewState": "AgIAAAkAAAAAAAAAAAAAABoAAAAjAAAAAAAAAA==",
+              "ViewState": "AgIAAGAAAAAAAAAAAAAwwHEAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-12-18T00:21:40.95Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 3,
               "Title": "LevelTimer.cs",
               "DocumentMoniker": "C:\\Users\\devin\\Desktop\\Programs\\Gitlab\\vr-archery\\Assets\\Scripts\\LevelTimer.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\LevelTimer.cs",
               "ToolTip": "C:\\Users\\devin\\Desktop\\Programs\\Gitlab\\vr-archery\\Assets\\Scripts\\LevelTimer.cs",
               "RelativeToolTip": "Assets\\Scripts\\LevelTimer.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAACcAAAAFAAAAAAAAAA==",
+              "ViewState": "AgIAAA8AAAAAAAAAAAAowDMAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-12-18T00:17:27.649Z",
               "EditorCaption": ""

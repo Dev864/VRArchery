@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Level_2
   m_EditorClassIdentifier: 
   levelNumber: 2
-  levelName: Expert
-  maxArrows: 6
+  levelName: Level 2 desert
+  maxArrows: 7
   targetCount: 6
   timeLimit: 0

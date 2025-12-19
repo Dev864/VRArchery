@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Level_1
   m_EditorClassIdentifier: 
   levelNumber: 1
-  levelName: Intermediate
+  levelName: Level 1 grass
   maxArrows: 8
   targetCount: 6
   timeLimit: 0
